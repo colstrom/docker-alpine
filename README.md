@@ -10,6 +10,7 @@ All tags for this image are [Edge](http://wiki.alpinelinux.org/wiki/Edge) builds
 Tags
 ----
   * `main`, `edge`, or `latest` includes only the `main` repository.
+  * `testing` includes the `main` and `testing` repositories.
 
 License
 -------
