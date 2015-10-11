@@ -11,6 +11,7 @@ Tags
 ----
   * `main`, `edge`, or `latest` includes only the `main` repository.
   * `testing` includes the `main` and `testing` repositories.
+  * `community` includes the `main`, `testing`, and `community` repositories.
 
 License
 -------
