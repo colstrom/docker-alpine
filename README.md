@@ -16,6 +16,8 @@ All tags for this image are [Edge](http://wiki.alpinelinux.org/wiki/Edge) builds
   * `testing` includes the `main` and `testing` repositories.
   * `community` includes the `main`, `testing`, and `community` repositories.
 
+_From any tag, packages from the others can be imported with `@tag`._
+
 # License
 [MIT](https://tldrlegal.com/license/mit-license)
 
