@@ -1,8 +1,8 @@
 FROM alpine:edge
 RUN mkdir -p /usr/local/sbin \
-    && echo http://alpine.gliderlabs.com/alpine/edge/main | tee /etc/apk/repositories \
-    && echo @testing http://alpine.gliderlabs.com/alpine/edge/testing | tee -a /etc/apk/repositories \
-    && echo @community http://alpine.gliderlabs.com/alpine/edge/community | tee -a /etc/apk/repositories \
+    && echo http://nl.alpinelinux.org/alpine/edge/main | tee /etc/apk/repositories \
+    && echo @testing http://nl.alpinelinux.org/alpine/edge/testing | tee -a /etc/apk/repositories \
+    && echo @community http://nl.alpinelinux.org/alpine/edge/community | tee -a /etc/apk/repositories \
     && apk add --update openssl \
     && wget -q -O /usr/local/sbin/apk-install https://raw.githubusercontent.com/gliderlabs/docker-alpine/master/builder/scripts/apk-install \
     && wget -q -O /usr/local/bin/owner https://raw.githubusercontent.com/colstrom/owner/master/bin/owner \
