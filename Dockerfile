@@ -1,4 +1,6 @@
 FROM alpine:edge
+MAINTAINER Chris Olstrom <chris@olstrom.com>
+
 RUN mkdir -p /usr/local/sbin \
     && echo http://nl.alpinelinux.org/alpine/edge/main | tee /etc/apk/repositories \
     && echo @testing http://nl.alpinelinux.org/alpine/edge/testing | tee -a /etc/apk/repositories \
