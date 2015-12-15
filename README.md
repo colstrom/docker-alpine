@@ -9,14 +9,13 @@ All tags for this image are [Edge](http://wiki.alpinelinux.org/wiki/Edge) builds
 ## Additions
 
 [owner](https://github.com/colstrom/owner) is included with this image. The ~800 bytes it adds to the image is a fair trade for the debugging time saved when you need it.
+[apk-install](https://github.com/gliderlabs/docker-alpine) simplifies the "Fetch Cache", "Install Package", "Empty Cache" flow to a single step: `apk-install package`.
 
 ## Tags
 
-  * `main`, `edge`, or `latest` includes only the `main` repository.
-  * `testing` includes the `main` and `testing` repositories.
-  * `community` includes the `main`, `testing`, and `community` repositories.
+* `latest` tracks the `edge` tag from [upstream](https://hub.docker.com/r/_/alpine/)
 
-_From any tag, packages from the others can be imported with `@tag`._
+_This includes the `main`, `testing`, and `community` repositories, but all packages outside `main` are masked. To import them, just use `apk add package@tag`._
 
 # License
 [MIT](https://tldrlegal.com/license/mit-license)
