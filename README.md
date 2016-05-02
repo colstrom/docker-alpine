@@ -10,6 +10,7 @@ All tags for this image are [Edge](http://wiki.alpinelinux.org/wiki/Edge) builds
 
 [owner](https://github.com/colstrom/owner) is included with this image. The ~800 bytes it adds to the image is a fair trade for the debugging time saved when you need it.
 [apk-install](https://github.com/gliderlabs/docker-alpine) simplifies the "Fetch Cache", "Install Package", "Empty Cache" flow to a single step: `apk-install package`.
+[package](https://github.com/colstrom/package.sh) replaces `apk-install`, serving the same purpose, but providing a generic interface across package management tools.
 
 ## Tags
 
