@@ -1,0 +1,81 @@
+#!/bin/sh
+
+BACKEND='brew'
+
+set -o nounset
+test -n ${DEBUG:-''} && set -o xtrace
+
+clean_cache() {
+    test -z ${NO_CLEAN_CACHE:-''} && brew cleanup
+}
+
+clean() {
+    for TARGET in ${@}; do
+        case ${TARGET} in
+            cache)
+                clean_cache;;
+            all)
+                clean cache;;
+            *)
+                clean all;;
+        esac
+    done
+}
+
+fetch_index() {
+    test -z ${NO_FETCH_INDEX:-''} && brew update
+}
+
+fetch() {
+    for TARGET in ${@}; do
+        case ${TARGET} in
+            index)
+                fetch_index;;
+            *)
+                echo "package.brew: no fetch_${TARGET} function defined" >&2;;
+        esac
+    done
+}
+
+missing() {
+    for PACKAGE in ${@}; do
+        brew list | grep -q "^${PACKAGE}\$" || echo ${PACKAGE}
+    done
+}
+
+installed() {
+    test $(missing ${@} | wc -l) -eq 0
+}
+
+install() {
+    if installed ${@}; then
+        exit 0
+    else
+        fetch index
+        brew install ${@}
+        cleanup all
+    fi
+}
+
+usage() {
+    true
+}
+
+entrypoint() {
+    case ${#} in
+        0|1)
+            package usage;;
+        *)
+            COMMAND=${1}
+            shift
+            case ${COMMAND} in
+                clean|fetch|install|installed|missing|usage)
+                    ${COMMAND} ${@};;
+                *)
+                    echo package.brew: command ${COMMAND} not recognized >&2
+                    false;;
+            esac;;
+    esac
+}
+
+entrypoint ${@:-''}
