@@ -55,7 +55,7 @@ install() {
     else
         fetch index
         apk add ${@}
-        cleanup all
+        clean all
     fi
 }
 
