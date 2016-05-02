@@ -1,0 +1,52 @@
+#!/bin/sh
+
+set -o nounset
+test -n ${DEBUG:-''} && set -o xtrace
+
+backends() {
+    for CANDIDATE in apt-get apk brew; do
+        command -v ${CANDIDATE} >/dev/null && echo ${CANDIDATE}
+    done
+}
+
+backend() {
+    BACKEND=${BACKEND:-$(backends | head -n 1)}
+    echo ${BACKEND}
+}
+
+usage() {
+    COMMAND=${1:-''}
+    case ${COMMAND} in
+        backend|backends)
+            echo "usage: package ${COMMAND}" >&2;;
+        install|installed|missing)
+            echo "usage: package ${COMMAND} <package> [package ...]" >&2;;
+        fetch)
+            echo "usage: package ${COMMAND} index" >&2;;
+        clean)
+            echo "usage: package ${COMMAND} (cache|all)" >&2;;
+        *)
+            echo 'usage: package (fetch|clean|install|installed|missing|backend|backends)' >&2;;
+    esac
+    package.$(backend) usage ${COMMAND}
+}
+
+entrypoint() {
+    case ${#} in
+        0)
+            usage ;;
+        1)
+            COMMAND=${1}
+            shift
+            case ${COMMAND} in
+                backend|backends)
+                    ${COMMAND};;
+                *)
+                    usage ${COMMAND};;
+            esac;;
+        *)
+            package.$(backend) ${@};;
+    esac
+}
+
+entrypoint ${@:-'usage'}
