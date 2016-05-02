@@ -1,0 +1,62 @@
+#+TITLE: package.sh
+#+LATEX: \pagebreak
+
+* Overview
+
+~package~ is a wrapper around system package management tools, intended for use
+in automated build systems. It provides a consistent interface for common
+packaging operations, and supports pluggable backends.
+
+* Usage
+
+#+BEGIN_EXAMPLE
+  # package install fish
+#+END_EXAMPLE
+
+This would fetch an up-to-date package index, install ~fish~, and then remove
+the package index, cache, and temp files.
+
+* Supported Backends
+
+- apk
+- apt-get
+- brew
+
+* Commands
+
+| Name        | Description                                                           |
+|-------------+-----------------------------------------------------------------------|
+| fetch index | Fetch an up-to-date package index                                     |
+| clean       | Remove clutter from install process                                   |
+| install     | Install unless already installed                                      |
+| installed   | Given a list of packages, returns 0 if all are installed, 1 otherwise |
+| missing     | Given a list of packages, prints the ones that are missing            |
+| backends    | Prints a list of package management backends on the system            |
+| backend     | Prints the package management backend that will be used               |
+
+* Configuration
+
+~package~ can be configured through the following environment variables:
+
+** General (supported by all backends)
+| Name           | Description                      |
+|----------------+----------------------------------|
+| BACKEND        | Override backend detection       |
+| NO_CLEAN_CACHE | Do not delete package cache      |
+| NO_FETCH_INDEX | Do not fetch an up-to-date index |
+
+** apt-get
+
+| Name             | Description                     |
+|------------------+---------------------------------|
+| NO_CLEAN_INDEX   | Do not delete package index     |
+| NO_CLEAN_ORPHANS | Do not delete orphaned packages |
+| NO_CLEAN_TEMP    | Do not delete temporary files   |
+| NO_FETCH_PACKAGE | Do not download packages        |
+
+* License
+
+~package~ is available under the [[https://tldrlegal.com/license/mit-license][MIT License]]. See ~LICENSE.txt~ for the full text.
+
+* Contributors
+- [[https://colstrom.github.io/][Chris Olstrom]] | [[mailto:chris@olstrom.com][e-mail]] | [[https://twitter.com/ChrisOlstrom][Twitter]]
