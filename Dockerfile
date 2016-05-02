@@ -1,4 +1,5 @@
 FROM alpine:edge
+COPY vendor/github.com/colstrom/package.sh/bin/* /usr/local/bin/
 RUN mkdir -p /usr/local/sbin \
     && echo http://nl.alpinelinux.org/alpine/edge/main | tee /etc/apk/repositories \
     && echo @testing http://nl.alpinelinux.org/alpine/edge/testing | tee -a /etc/apk/repositories \
