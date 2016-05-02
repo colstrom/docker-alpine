@@ -53,7 +53,7 @@ install() {
     else
         fetch index
         brew install ${@}
-        cleanup all
+        clean all
     fi
 }
 
