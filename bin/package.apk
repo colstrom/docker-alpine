@@ -1,0 +1,83 @@
+#!/bin/sh
+
+#!/bin/sh
+
+BACKEND='apk'
+
+set -o nounset
+test -n ${DEBUG:-''} && set -o xtrace
+
+clean_cache() {
+    test -z ${NO_CLEAN_CACHE:-''} && rm -rf /var/cache/apk/*
+}
+
+clean() {
+    for TARGET in ${@}; do
+        case ${TARGET} in
+            cache)
+                clean_cache;;
+            all)
+                clean cache;;
+            *)
+                clean all;;
+        esac
+    done
+}
+
+fetch_index() {
+    test -z ${NO_FETCH_INDEX:-''} && apk update
+}
+
+fetch() {
+    for TARGET in ${@}; do
+        case ${TARGET} in
+            index)
+                fetch_index;;
+            *)
+                echo "package.apk: no fetch_${TARGET} function defined" >&2;;
+        esac
+    done
+}
+
+missing() {
+    for PACKAGE in ${@}; do
+        apk info | grep -q "^${PACKAGE}\$" || echo ${PACKAGE}
+    done
+}
+
+installed() {
+    test $(missing ${@} | wc -l) -eq 0
+}
+
+install() {
+    if installed ${@}; then
+        exit 0
+    else
+        fetch index
+        apk add ${@}
+        cleanup all
+    fi
+}
+
+usage() {
+    true
+}
+
+entrypoint() {
+    case ${#} in
+        0|1)
+            package usage;;
+        *)
+            COMMAND=${1}
+            shift
+            case ${COMMAND} in
+                clean|fetch|install|installed|missing|usage)
+                    ${COMMAND} ${@};;
+                *)
+                    echo package.apk: command ${COMMAND} not recognized >&2
+                    false;;
+            esac;;
+    esac
+}
+
+entrypoint ${@:-''}

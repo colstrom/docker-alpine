@@ -1,0 +1,104 @@
+#!/bin/sh
+
+BACKEND='apt-get'
+
+set -o nounset
+test -n ${DEBUG:-''} && set -o xtrace
+
+clean_index() {
+    test -z ${NO_CLEAN_INDEX:-''} && rm -rf /var/lib/apt/lists/*
+}
+
+clean_cache() {
+    test -z ${NO_CLEAN_CACHE:-''} && apt-get clean
+}
+
+clean_orphans() {
+    test -z ${NO_CLEAN_ORPHANS:-''} && apt-get autoremove --purge --assume-yes
+}
+
+clean_temp() {
+    test -z ${NO_CLEAN_TEMP:-''} && rm -rf /tmp/* /var/tmp/*
+}
+
+clean() {
+    for TARGET in ${@}; do
+        case ${TARGET} in
+            cache|index|orphans|temp)
+                clean_${TARGET};;
+            all)
+                clean cache index orphans temp;;
+            *)
+                clean all;;
+        esac
+    done
+}
+
+fetch_index() {
+    test -z ${NO_FETCH_INDEX:-''} && apt-get update
+}
+
+fetch_package() {
+    test -z ${NO_FETCH_PACKAGE:-''} && apt-get install --download-only ${@}
+}
+
+fetch() {
+    for TARGET in ${@}; do
+        case ${TARGET} in
+            index|package)
+                shift
+                fetch_${TARGET} ${@};;
+            *)
+                fetch package ${@};;
+        esac
+    done
+}
+
+missing() {
+    for PACKAGE in ${@}; do
+        dpkg-query --show ${PACKAGE} >/dev/null 2>/dev/null || echo ${PACKAGE}
+    done
+}
+
+installed() {
+    test $(missing ${@} | wc -l) -eq 0
+}
+
+install() {
+    if installed ${@}; then
+        exit 0
+    else
+        fetch index
+        apt-get install --assume-yes ${@}
+        clean all
+    fi
+}
+
+usage() {
+    COMMAND=${1:-''}
+    case ${COMMAND} in
+        clean)
+            echo "usage: package.apt-get ${COMMAND} (index|orphans|temp)" >&2;;
+        fetch)
+            echo "usage: package.apt-get ${COMMAND} package <package> [package ...]" >&2;;
+    esac
+}
+
+entrypoint() {
+    case ${#} in
+        0|1)
+            package usage;;
+        *)
+            COMMAND=${1}
+            shift
+            case ${COMMAND} in
+                clean|fetch|install|installed|missing|usage)
+                    ${COMMAND} ${@};;
+                *)
+                    echo package.apt-get: command ${COMMAND} not recognized >&2
+                    false;;
+            esac;;
+    esac
+}
+
+entrypoint ${@:-''}
