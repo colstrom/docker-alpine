@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.13
 COPY vendor/github.com/colstrom/package.sh/bin/* /usr/local/bin/
 RUN mkdir -p /usr/local/sbin \
     && echo http://dl-cdn.alpinelinux.org/alpine/edge/main | tee /etc/apk/repositories \
